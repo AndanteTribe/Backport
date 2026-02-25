@@ -1,0 +1,41 @@
+name: dotnet-test
+
+on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+    paths:
+      - 'src/**'
+  push:
+    branches:
+      - main
+    paths:
+      - 'src/**'
+  workflow_dispatch: {}
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        include:
+          - dotnet-version: '5.0.x'
+            framework: 'net5.0'
+          - dotnet-version: '6.0.x'
+            framework: 'net6.0'
+          - dotnet-version: '7.0.x'
+            framework: 'net7.0'
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+    - uses: actions/setup-dotnet@v5
+      with:
+        dotnet-version: ${{ matrix.dotnet-version }}
+    - run: dotnet restore ./src/Backport.Tests
+    - run: dotnet build ./src/Backport.Tests --configuration Release --no-restore
+    - run: dotnet test ./src/Backport.Tests --configuration Release --no-build --framework ${{ matrix.framework }}
