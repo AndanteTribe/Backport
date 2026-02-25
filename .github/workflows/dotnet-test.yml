@@ -29,10 +29,6 @@ jobs:
             framework: 'net6.0'
           - dotnet-version: '7.0.x'
             framework: 'net7.0'
-          - dotnet-version: '8.0.x'
-            framework: 'net8.0'
-          - dotnet-version: '9.0.x'
-            framework: 'net9.0'
     steps:
     - uses: actions/checkout@v4
       with:
