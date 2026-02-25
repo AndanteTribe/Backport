@@ -38,21 +38,4 @@ jobs:
         dotnet-version: ${{ matrix.dotnet-version }}
     - run: dotnet restore ./src/Backport.Tests
     - run: dotnet build ./src/Backport.Tests --configuration Release --no-restore
-    - run: dotnet test ./src/Backport.Tests --configuration Release --no-build --verbosity normal --collect:"XPlat Code Coverage" --framework ${{ matrix.framework }}
-    - name: Find coverage output path
-      shell: pwsh
-      run: |
-        $files = Get-ChildItem -Path . -Filter "coverage.cobertura.xml" -Recurse -File
-        foreach ($file in $files) {
-            Copy-Item -Path $file.FullName -Destination . -Force
-        }
-    - name: Run ReportGenerator
-      shell: pwsh
-      run: |
-        dotnet tool install -g dotnet-reportgenerator-globaltool
-        reportgenerator -reports:"coverage.cobertura.xml" -targetdir:"report" -reporttypes:"Html;MarkdownSummary"
-        Get-Content report/Summary.md | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Encoding utf8
-    - uses: actions/upload-artifact@v4
-      with:
-        name: coverage-report-${{ matrix.framework }}
-        path: report/
+    - run: dotnet test ./src/Backport.Tests --configuration Release --no-build --framework ${{ matrix.framework }}
