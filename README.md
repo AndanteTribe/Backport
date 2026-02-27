@@ -29,6 +29,17 @@ It allows you to use newer C# language features and .NET APIs — such as interp
 | `System.Runtime.CompilerServices.SetsRequiredMembersAttribute` | `< .NET 7` |
 | `System.Diagnostics.CodeAnalysis.StringSyntaxAttribute` | `< .NET 7` |
 
+### API Notes
+
+#### `CancellationToken.UnsafeRegister`
+While the API signature matches the .NET 6 original, the behavior is equivalent to UniTask's `CancellationToken.RegisterWithoutCaptureExecutionContext` — it registers a callback without capturing the `ExecutionContext`, avoiding unnecessary allocations in high-performance scenarios.
+
+#### `DefaultInterpolatedStringHandler`
+The implementation has been modified from the standard .NET source. It supports optimization via `ISpanFormattable`, allowing types that implement `ISpanFormattable` to write directly into the internal buffer without intermediate string allocation. When using `Backport.Unity`, Unity-specific value types (e.g. `UnityEngine.Vector3`, `Quaternion`, `Color`, etc.) are also supported through `UnityCustomSpanFormatter`.
+
+#### `Random.Shared` (`RandomExtensions`)
+`Random.Shared` is implemented using a C# 14 `extension` block. This means `Random.Shared` syntax is only available when compiling with C# 14 or later. In earlier C# versions, the underlying static accessor (`RandomExtensions.get_Shared()`) is accessible but is primarily intended for internal library use.
+
 ## Requirements
 - .NET Standard 2.1 or higher
 

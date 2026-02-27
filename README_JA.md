@@ -29,6 +29,17 @@
 | `System.Runtime.CompilerServices.SetsRequiredMembersAttribute` | `< .NET 7` |
 | `System.Diagnostics.CodeAnalysis.StringSyntaxAttribute` | `< .NET 7` |
 
+### API の補足説明
+
+#### `CancellationToken.UnsafeRegister`
+API シグネチャは .NET 6 の標準実装と同一ですが、挙動は UniTask の `CancellationToken.RegisterWithoutCaptureExecutionContext` と同等です。`ExecutionContext` をキャプチャせずにコールバックを登録するため、パフォーマンスが要求される場面での余分なアロケーションを回避できます。
+
+#### `DefaultInterpolatedStringHandler`
+標準の .NET ソースから実装を改変しています。`ISpanFormattable` を実装した型については、中間文字列アロケーションなしに内部バッファへ直接書き込む最適化が可能です。`Backport.Unity` 導入時は、`UnityCustomSpanFormatter` を通じて `UnityEngine.Vector3`・`Quaternion`・`Color` などの Unity 固有の値型にも対応します。
+
+#### `Random.Shared`（`RandomExtensions`）
+`Random.Shared` は C# 14 の `extension` ブロックを使用して実装されています。そのため `Random.Shared` という構文が使えるのは C# 14 以上でコンパイルする場合のみです。それより前の C# バージョンでは、内部の静的アクセサー（`RandomExtensions.get_Shared()`）にはアクセスできますが、主にライブラリ内部での使用を想定しています。
+
 ## 動作要件
 - .NET Standard 2.1 以上
 
