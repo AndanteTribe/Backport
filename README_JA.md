@@ -4,17 +4,17 @@
 [![unity-test](https://github.com/AndanteTribe/Backport/actions/workflows/unity-test.yml/badge.svg)](https://github.com/AndanteTribe/Backport/actions/workflows/unity-test.yml)
 [![GitHub license](https://img.shields.io/github/license/AndanteTribe/Backport.svg)](./LICENSE)
 
-English | [日本語](README_JA.md)
+[English](README.md) | 日本語
 
-## Overview
-**Backport** is a library that backports modern .NET APIs for use in legacy runtimes such as Unity (netstandard2.1).
+## 概要
+**Backport** は、Unity (netstandard2.1) などのレガシーランタイム向けに、モダンな .NET API をバックポートするライブラリです。
 
-It allows you to use newer C# language features and .NET APIs — such as interpolated string handlers, `required` members, `Random.Shared`, and more — even when targeting older runtimes.
+補間文字列ハンドラー、`required` メンバー、`Random.Shared` など、新しい C# 言語機能や .NET API を古いランタイムをターゲットにしている場合でも利用できるようになります。
 
-### Provided APIs
+### 提供する API
 
-| API | Available when |
-|-----|---------------|
+| API | 利用可能な条件 |
+|-----|--------------|
 | `System.Runtime.CompilerServices.CallerArgumentExpressionAttribute` | `< .NET 6` |
 | `System.Threading.CancellationTokenExtensions` (`UnsafeRegister`) | `< .NET 6` |
 | `System.Runtime.InteropServices.CollectionsMarshal` (`AsSpan`) | `< .NET 5` |
@@ -29,10 +29,10 @@ It allows you to use newer C# language features and .NET APIs — such as interp
 | `System.Runtime.CompilerServices.SetsRequiredMembersAttribute` | `< .NET 7` |
 | `System.Diagnostics.CodeAnalysis.StringSyntaxAttribute` | `< .NET 7` |
 
-## Requirements
-- .NET Standard 2.1 or higher
+## 動作要件
+- .NET Standard 2.1 以上
 
-## Installation
+## インストール
 ### NuGet (.NET)
 
 #### .NET CLI
@@ -46,16 +46,16 @@ Install-Package AndanteTribe.Backport
 ```
 
 ### Unity
-**Backport** is available as a Unity package.
+**Backport** は Unity パッケージとして利用可能です。
 
-#### Requirements
-- Unity 2021.3 or later
+#### 動作要件
+- Unity 2021.3 以上
 
-#### Steps
-1. Open `Window > Package Manager`, select `[+] > Add package from git URL`, and enter the following URL:
+#### 手順
+1. `Window > Package Manager` を開き、`[+] > Add package from git URL` を選択して、以下の URL を入力してください:
     ```
     https://github.com/AndanteTribe/Backport.git?path=src/Backport.Unity/Packages/jp.andantetribe.backport
     ```
 
-## License
-This library is released under the [MIT License](./LICENSE).
+## ライセンス
+このライブラリは [MIT ライセンス](./LICENSE) のもとで公開されています。
