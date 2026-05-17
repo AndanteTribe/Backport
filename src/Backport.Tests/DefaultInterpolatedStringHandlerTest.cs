@@ -1,4 +1,4 @@
-﻿#if !NET6_0_OR_GREATER
+#if !NET6_0_OR_GREATER
 
 using System;
 using System.Globalization;
@@ -186,7 +186,7 @@ namespace Backport.Tests
 
                     // object, format
                     expected.AppendFormat("{0:X2}", o);
-                    actual.AppendFormatted(o,  "X2");
+                    actual.AppendFormatted(o, "X2");
                     if (o is IHasToStringState tss2)
                     {
                         Assert.That(tss2.ToStringState.LastFormat, Is.EqualTo("X2"));
