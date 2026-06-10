@@ -32,10 +32,12 @@ jobs:
           - dotnet-version: '7.0.x'
             framework: 'net7.0'
     steps:
-    - uses: actions/checkout@v4
+    # ghasec-ignore: unpinned-action
+    - uses: AndanteTribe/Actions/actions/checkout@main # zizmor: ignore[unpinned-uses] repository-local action reference is intentionally tracked on @main
       with:
         fetch-depth: 0
-    - uses: actions/setup-dotnet@v5
+    # ghasec-ignore: unpinned-action
+    - uses: AndanteTribe/Actions/actions/setup-dotnet@main # zizmor: ignore[unpinned-uses] repository-local action reference is intentionally tracked on @main
       with:
         dotnet-version: ${{ matrix.dotnet-version }}
     - run: dotnet restore ./src/Backport.Tests
