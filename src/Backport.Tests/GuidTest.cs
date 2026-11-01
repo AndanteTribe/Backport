@@ -31,7 +31,7 @@ namespace Backport.Tests
             Assert.That(guid.Substring(0, 8), Is.EqualTo(hex.Substring(0, 8)));
             Assert.That(guid.Substring(9, 4), Is.EqualTo(hex.Substring(8)));
             Assert.That(guid[14], Is.EqualTo('7'));
-            Assert.That(guid[19], Is.AnyOf('8', '9', 'a', 'b'));
+            Assert.That(guid[19], Is.EqualTo('8').Or.EqualTo('9').Or.EqualTo('a').Or.EqualTo('b'));
         }
 
         [Test]
