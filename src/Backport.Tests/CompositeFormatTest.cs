@@ -13,6 +13,11 @@ namespace Backport.Tests
     // dotnet/runtime v10.0.14 System/Text/CompositeFormatTests.cs.
     public class CompositeFormatTest
     {
+        // Keep formatting expectations explicit rather than deriving them from string.Format.
+        // Unity/Mono and modern .NET interpret adjacent escaped braces differently:
+        // string.Format("{{{0:D4}}}", 123) produces "{D4}" on Unity/Mono, but "{0123}" on .NET 10.
+        // These tests verify .NET 10 CompositeFormat behavior on every runtime.
+
         [TestCase("", 0)]
         [TestCase("testing 123", 0)]
         [TestCase("testing {{123}}", 0)]
@@ -67,19 +72,18 @@ namespace Backport.Tests
             Assert.Throws<FormatException>(() => CompositeFormat.Parse(format));
         }
 
-        [TestCase("{0}")]
-        [TestCase("{{{0:D4}}}")]
-        [TestCase("{0, 8:N2} {1,-8} {2:X} {3}")]
-        [TestCase("{3} {2} {1} {0} {0}")]
-        [TestCase("{0   , -8 :D4}")]
-        [TestCase("{{literal}}")]
-        [TestCase("")]
-        public void TryWrite_ArrayAndSpan(string format)
+        [TestCase("{0}", "123")]
+        [TestCase("{{{0:D4}}}", "{0123}")]
+        [TestCase("{0, 8:N2} {1,-8} {2:X} {3}", "  123,00 abc      2A ")]
+        [TestCase("{3} {2} {1} {0} {0}", " 42 abc 123 123")]
+        [TestCase("{0   , -8 :D4}", "0123    ")]
+        [TestCase("{{literal}}", "{literal}")]
+        [TestCase("", "")]
+        public void TryWrite_ArrayAndSpan(string format, string expected)
         {
             var cf = CompositeFormat.Parse(format);
             var args = new object[] { 123, "abc", 42, null };
             var provider = CultureInfo.GetCultureInfo("fr-FR");
-            var expected = string.Format(provider, format, args);
             var buffer = new char[expected.Length];
             Assert.That(buffer.AsSpan().TryWrite(provider, cf, out var written, args), Is.True);
             Assert.That(written, Is.EqualTo(expected.Length));
@@ -152,7 +156,7 @@ namespace Backport.Tests
             var literal = new string('x', 1024);
             var format = literal + "{{{0}}}" + literal + "{0}" + literal;
             var cf = CompositeFormat.Parse(format);
-            var expected = string.Format(format, 42);
+            var expected = literal + "{42}" + literal + "42" + literal;
             var buffer = new char[expected.Length];
             Assert.That(buffer.AsSpan().TryWrite(null, cf, out var written, 42), Is.True);
             Assert.That(written, Is.EqualTo(expected.Length));
@@ -160,19 +164,18 @@ namespace Backport.Tests
             Assert.Throws<FormatException>(() => CompositeFormat.Parse(format + "{"));
         }
 
-        [TestCase("{0}")]
-        [TestCase("{{{0:D4}}}")]
-        [TestCase("{0, 8:N2} {1,-8} {2:X} {3}")]
-        [TestCase("{3} {2} {1} {0} {0}")]
-        [TestCase("{{literal}}")]
-        [TestCase("")]
-        public void AppendFormat_ArrayAndSpan(string format)
+        [TestCase("{0}", "123")]
+        [TestCase("{{{0:D4}}}", "{0123}")]
+        [TestCase("{0, 8:N2} {1,-8} {2:X} {3}", "  123,00 abc      2A ")]
+        [TestCase("{3} {2} {1} {0} {0}", " 42 abc 123 123")]
+        [TestCase("{{literal}}", "{literal}")]
+        [TestCase("", "")]
+        public void AppendFormat_ArrayAndSpan(string format, string expected)
         {
             // Port of StringBuilderAppendFormat_Valid in CompositeFormatTests.cs.
             var cf = CompositeFormat.Parse(format);
             var args = new object[] { 123, "abc", 42, null };
             var provider = CultureInfo.GetCultureInfo("fr-FR");
-            var expected = string.Format(provider, format, args);
             var builder = new StringBuilder("prefix:", 8);
             Assert.That(builder.AppendFormat(provider, cf, args), Is.SameAs(builder));
             Assert.That(builder.ToString(), Is.EqualTo("prefix:" + expected));
