@@ -25,6 +25,10 @@
 | `System.Runtime.CompilerServices.InterpolatedStringHandlerAttribute` | `< .NET 6` |
 | `System.Runtime.CompilerServices.IsExternalInit` | `< .NET 5` |
 | `System.ISpanFormattable` | `< .NET 6` |
+| `System.GuidExtensions` (`Guid.CreateVersion7`) | `< .NET 9` |
+| `System.Text.CompositeFormat` | `< .NET 8` |
+| `System.SpanExtensions` (`Span<char>.TryWrite` の `CompositeFormat` オーバーロード) | `< .NET 8` |
+| `System.Text.StringBuilderExtensions` (`StringBuilder.AppendFormat` の `CompositeFormat` オーバーロード) | `< .NET 8` |
 | `System.RandomExtensions` (`Random.Shared`) | `< .NET 6` |
 | `System.Runtime.CompilerServices.RequiredMemberAttribute` | `< .NET 7` |
 | `System.Runtime.CompilerServices.SetsRequiredMembersAttribute` | `< .NET 7` |
@@ -38,10 +42,35 @@ API シグネチャは .NET 6 の標準実装と同一ですが、挙動は UniT
 #### `DefaultInterpolatedStringHandler`
 標準の .NET ソースから実装を改変しています。`ISpanFormattable` を実装した型については、中間文字列アロケーションなしに内部バッファへ直接書き込む最適化が可能です。`Backport.Unity` 導入時は、`UnityCustomSpanFormatter` を通じて `UnityEngine.Vector3`・`Quaternion`・`Color` などの Unity 固有の値型にも対応します。
 
-`DefaultInterpolatedStringHandler.Text` と `Clear()` は、.NET 5以前ではバックポート型の公開メンバー、.NET 6～9では拡張メンバー、.NET 10以降では本家の公開メンバーとして利用できます。.NET 6～9の `Text` プロパティ構文にはC# 14が必要です。`Clear()` は通常の `ref` 拡張メソッドです。拡張実装は本家の非公開メンバーに依存し、.NET 6・7ではキャッシュしたデリゲート、.NET 8・9では `UnsafeAccessor` を使用します。
+`DefaultInterpolatedStringHandler.Text` と `Clear()` は、.NET 5以前ではバックポート型の公開メンバー、.NET 6～9では拡張メンバー、.NET 10以降では標準の公開メンバーとして利用できます。.NET 6～9の `Text` プロパティ構文にはC# 14が必要です。拡張実装はランタイムの非公開メンバーに依存し、.NET 6・7ではキャッシュしたデリゲート、.NET 8・9では `UnsafeAccessor` を使用します。
 
 #### `Random.Shared`（`RandomExtensions`）
 `Random.Shared` は C# 14 の `extension` ブロックを使用して実装されています。そのため `Random.Shared` という構文が使えるのは C# 14 以上でコンパイルする場合のみです。それより前の C# バージョンでは、内部の静的アクセサー（`RandomExtensions.get_Shared()`）にはアクセスできますが、主にライブラリ内部での使用を想定しています。
+
+#### `Guid.CreateVersion7` / `CompositeFormat`
+`Guid.CreateVersion7()` と日時指定オーバーロードは、`Guid.NewGuid()` の乱数にUnixミリ秒・version・variantを設定します。Unix Epoch以前の日時は例外になります。C# 14では `Guid.CreateVersion7()`、それ以前のC#では `GuidExtensions.CreateVersion7()` と呼び出せます。
+
+`CompositeFormat.Parse` で解析結果を再利用できます。
+
+`Span<char>.TryWrite` はジェネリック引数1～3個・配列・`ReadOnlySpan<object?>` の5オーバーロードを提供します。容量不足なら `false` と `charsWritten = 0` を返します（出力先には途中まで書き込まれる場合があります）。
+
+```csharp
+var format = CompositeFormat.Parse("Value: {0:D4}");
+Span<char> destination = stackalloc char[64];
+if (destination.TryWrite(null, format, out var charsWritten, 42))
+{
+    var text = destination.Slice(0, charsWritten).ToString();
+}
+```
+
+`StringBuilder.AppendFormat` も同じ5種類の引数形式に対応しています。.NET 8未満では、プロバイダーに型のない `null` を渡すと既存の文字列用オーバーロードが優先されるため、型のあるプロバイダー、または明示的な型引数を使用してください。
+
+```csharp
+builder.AppendFormat(CultureInfo.InvariantCulture, format, 42);
+builder.AppendFormat<int>(null, format, 42);
+```
+
+`string.Format` の関連オーバーロードは提供していません。
 
 ## 動作要件
 - .NET Standard 2.1 以上

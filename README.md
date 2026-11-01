@@ -25,6 +25,10 @@ It allows you to use newer C# language features and .NET APIs — such as interp
 | `System.Runtime.CompilerServices.InterpolatedStringHandlerAttribute` | `< .NET 6` |
 | `System.Runtime.CompilerServices.IsExternalInit` | `< .NET 5` |
 | `System.ISpanFormattable` | `< .NET 6` |
+| `System.GuidExtensions` (`Guid.CreateVersion7`) | `< .NET 9` |
+| `System.Text.CompositeFormat` | `< .NET 8` |
+| `System.SpanExtensions` (`Span<char>.TryWrite` overloads for `CompositeFormat`) | `< .NET 8` |
+| `System.Text.StringBuilderExtensions` (`StringBuilder.AppendFormat` overloads for `CompositeFormat`) | `< .NET 8` |
 | `System.RandomExtensions` (`Random.Shared`) | `< .NET 6` |
 | `System.Runtime.CompilerServices.RequiredMemberAttribute` | `< .NET 7` |
 | `System.Runtime.CompilerServices.SetsRequiredMembersAttribute` | `< .NET 7` |
@@ -38,10 +42,35 @@ While the API signature matches the .NET 6 original, the behavior is equivalent 
 #### `DefaultInterpolatedStringHandler`
 The implementation has been modified from the standard .NET source. It supports optimization via `ISpanFormattable`, allowing types that implement `ISpanFormattable` to write directly into the internal buffer without intermediate string allocation. When using `Backport.Unity`, Unity-specific value types (e.g. `UnityEngine.Vector3`, `Quaternion`, `Color`, etc.) are also supported through `UnityCustomSpanFormatter`.
 
-`DefaultInterpolatedStringHandler.Text` and `Clear()` are public members of the backported type before .NET 6, extension members on .NET 6–9, and built-in public members on .NET 10+. The `Text` property syntax on .NET 6–9 requires C# 14; `Clear()` is a conventional `ref` extension method. These extensions depend on non-public runtime members, using cached delegates on .NET 6–7 and `UnsafeAccessor` on .NET 8–9.
+`DefaultInterpolatedStringHandler.Text` and `Clear()` are public members of the backported type before .NET 6, extension members on .NET 6–9, and built-in public members on .NET 10+. The `Text` property syntax on .NET 6–9 requires C# 14. These extensions depend on non-public runtime members, using cached delegates on .NET 6–7 and `UnsafeAccessor` on .NET 8–9.
 
 #### `Random.Shared` (`RandomExtensions`)
 `Random.Shared` is implemented using a C# 14 `extension` block. This means `Random.Shared` syntax is only available when compiling with C# 14 or later. In earlier C# versions, the underlying static accessor (`RandomExtensions.get_Shared()`) is accessible but is primarily intended for internal library use.
+
+#### `Guid.CreateVersion7` / `CompositeFormat`
+Both `Guid.CreateVersion7` overloads use `Guid.NewGuid()` for randomness and set the Unix milliseconds, version, and variant fields. Timestamps before the Unix Epoch are rejected. Use `Guid.CreateVersion7()` with C# 14, or `GuidExtensions.CreateVersion7()` with earlier C# versions.
+
+`CompositeFormat.Parse` caches parsed segments for reuse.
+
+`Span<char>.TryWrite` provides five overloads: one to three generic arguments, an array, and `ReadOnlySpan<object?>`. Insufficient capacity returns `false` with `charsWritten = 0` (the destination may have been partially written).
+
+```csharp
+var format = CompositeFormat.Parse("Value: {0:D4}");
+Span<char> destination = stackalloc char[64];
+if (destination.TryWrite(null, format, out var charsWritten, 42))
+{
+    var text = destination.Slice(0, charsWritten).ToString();
+}
+```
+
+`StringBuilder.AppendFormat` supports the same five argument forms. Before .NET 8, an untyped `null` provider can bind to an existing string-based overload. Use a typed provider or explicit generic arguments.
+
+```csharp
+builder.AppendFormat(CultureInfo.InvariantCulture, format, 42);
+builder.AppendFormat<int>(null, format, 42);
+```
+
+Related `string.Format` overloads are not provided.
 
 ## Requirements
 - .NET Standard 2.1 or higher
