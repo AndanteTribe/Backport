@@ -282,6 +282,60 @@
             be used to unregister the callback.</returns>
             <exception cref="T:System.ArgumentNullException"><paramref name="callback"/> is null.</exception>
         </member>
+        <member name="T:System.Text.CompositeFormat">
+            <summary>Represents a parsed composite format string.</summary>
+        </member>
+        <member name="M:System.Text.CompositeFormat.Parse(System.String)">
+            <summary>Parses the composite format string.</summary>
+            <param name="format">The string to parse.</param>
+            <returns>The parsed format.</returns>
+            <exception cref="T:System.ArgumentNullException">The format is null.</exception>
+            <exception cref="T:System.FormatException">A format item is invalid.</exception>
+        </member>
+        <member name="P:System.Text.CompositeFormat.Format">
+            <summary>Gets the original composite format string.</summary>
+        </member>
+        <member name="P:System.Text.CompositeFormat.MinimumArgumentCount">
+            <summary>Gets the minimum number of arguments required by this format.</summary>
+        </member>
+        <member name="T:System.Text.StringBuilderExtensions">
+            <summary>Provides StringBuilder formatting with parsed composite formats.</summary>
+        </member>
+        <member name="M:System.Text.StringBuilderExtensions.AppendFormat``1(System.Text.StringBuilder,System.IFormatProvider,System.Text.CompositeFormat,``0)">
+            <summary>Appends one argument using a parsed composite format.</summary>
+        </member>
+        <member name="M:System.Text.StringBuilderExtensions.AppendFormat``2(System.Text.StringBuilder,System.IFormatProvider,System.Text.CompositeFormat,``0,``1)">
+            <summary>Appends two arguments using a parsed composite format.</summary>
+        </member>
+        <member name="M:System.Text.StringBuilderExtensions.AppendFormat``3(System.Text.StringBuilder,System.IFormatProvider,System.Text.CompositeFormat,``0,``1,``2)">
+            <summary>Appends three arguments using a parsed composite format.</summary>
+        </member>
+        <member name="M:System.Text.StringBuilderExtensions.AppendFormat(System.Text.StringBuilder,System.IFormatProvider,System.Text.CompositeFormat,System.Object[])">
+            <summary>Appends an array of arguments using a parsed composite format.</summary>
+        </member>
+        <member name="M:System.Text.StringBuilderExtensions.AppendFormat(System.Text.StringBuilder,System.IFormatProvider,System.Text.CompositeFormat,System.ReadOnlySpan{System.Object})">
+            <summary>Appends a span of arguments using a parsed composite format.</summary>
+        </member>
+        <member name="T:System.GuidExtensions">
+            <summary>Provides UUID version 7 generation on runtimes before .NET 9.</summary>
+        </member>
+        <member name="M:System.GuidExtensions.CreateVersion7">
+            <inheritdoc cref="M:System.GuidExtensions.&lt;G&gt;$68F3962AE5697E254AA596E55C7A8792.CreateVersion7"/>
+        </member>
+        <member name="M:System.GuidExtensions.CreateVersion7(System.DateTimeOffset)">
+            <inheritdoc cref="M:System.GuidExtensions.&lt;G&gt;$68F3962AE5697E254AA596E55C7A8792.CreateVersion7(System.DateTimeOffset)"/>
+        </member>
+        <member name="T:System.GuidExtensions.&lt;G&gt;$68F3962AE5697E254AA596E55C7A8792.&lt;M&gt;$68F3962AE5697E254AA596E55C7A8792">
+            <summary>Extensions for <see cref="T:System.Guid"/>.</summary>
+        </member>
+        <member name="M:System.GuidExtensions.&lt;G&gt;$68F3962AE5697E254AA596E55C7A8792.CreateVersion7">
+            <summary>Creates a new UUID version 7 using the current UTC timestamp.</summary>
+        </member>
+        <member name="M:System.GuidExtensions.&lt;G&gt;$68F3962AE5697E254AA596E55C7A8792.CreateVersion7(System.DateTimeOffset)">
+            <summary>Creates a new UUID version 7 using the specified timestamp.</summary>
+            <param name="timestamp">The timestamp used for the Unix Epoch milliseconds.</param>
+            <exception cref="T:System.ArgumentOutOfRangeException">The timestamp precedes the Unix Epoch.</exception>
+        </member>
         <member name="T:System.ISpanFormattable">
             <summary>Provides functionality to format the string representation of an object into a span.</summary>
         </member>
@@ -370,6 +424,24 @@
         </member>
         <member name="F:System.Diagnostics.CodeAnalysis.StringSyntaxAttribute.Xml">
             <summary>The syntax identifier for strings containing XML.</summary>
+        </member>
+        <member name="T:System.SpanExtensions">
+            <summary>Provides span formatting with parsed composite formats.</summary>
+        </member>
+        <member name="M:System.SpanExtensions.TryWrite``1(System.Span{System.Char},System.IFormatProvider,System.Text.CompositeFormat,System.Int32@,``0)">
+            <summary>Writes one argument using a parsed composite format.</summary>
+        </member>
+        <member name="M:System.SpanExtensions.TryWrite``2(System.Span{System.Char},System.IFormatProvider,System.Text.CompositeFormat,System.Int32@,``0,``1)">
+            <summary>Writes two arguments using a parsed composite format.</summary>
+        </member>
+        <member name="M:System.SpanExtensions.TryWrite``3(System.Span{System.Char},System.IFormatProvider,System.Text.CompositeFormat,System.Int32@,``0,``1,``2)">
+            <summary>Writes three arguments using a parsed composite format.</summary>
+        </member>
+        <member name="M:System.SpanExtensions.TryWrite(System.Span{System.Char},System.IFormatProvider,System.Text.CompositeFormat,System.Int32@,System.Object[])">
+            <summary>Writes an array of arguments using a parsed composite format.</summary>
+        </member>
+        <member name="M:System.SpanExtensions.TryWrite(System.Span{System.Char},System.IFormatProvider,System.Text.CompositeFormat,System.Int32@,System.ReadOnlySpan{System.Object})">
+            <summary>Writes a span of arguments using a parsed composite format.</summary>
         </member>
     </members>
 </doc>

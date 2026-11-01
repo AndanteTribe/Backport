@@ -1,0 +1,14 @@
+﻿<wpf:ResourceDictionary xml:space="preserve" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:ss="urn:shemas-jetbrains-com:settings-storage-xaml" xmlns:wpf="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=7020124F_002D9FFC_002D4AC3_002D8F3D_002DAAB8E0240759_002Ff_003AAssert_002Ecs_002Fl_003AC_0021_003FUsers_003Fmasatake_002Eiwasaki_003FAppData_003FRoaming_003FJetBrains_003FRider2025_002E3_003Fresharper_002Dhost_003FSourcesCache_003F46a322d26154b982566e1817203e5452c91223f93b0e392d9c5b4806696fdc1_003FAssert_002Ecs/@EntryIndexedValue">ForceIncluded</s:String>
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=4b8da892_002D6d26_002D4d92_002Dae27_002D2d97a26a8ccc/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="DefaultInterpolatedStringHandlerTest" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+  &lt;TestAncestor&gt;&#xD;
+    &lt;TestId&gt;NUnit3x::203C2B86-81A6-E66C-3F06-495CBFDDD89E::net5.0::Backport.Tests.DefaultInterpolatedStringHandlerTest&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;NUnit3x::203C2B86-81A6-E66C-3F06-495CBFDDD89E::net6.0::Backport.Tests.DefaultInterpolatedStringHandlerTest&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;NUnit3x::203C2B86-81A6-E66C-3F06-495CBFDDD89E::net8.0::Backport.Tests.DefaultInterpolatedStringHandlerTest&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;NUnit3x::203C2B86-81A6-E66C-3F06-495CBFDDD89E::net7.0::Backport.Tests.DefaultInterpolatedStringHandlerTest&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;NUnit3x::203C2B86-81A6-E66C-3F06-495CBFDDD89E::net5.0::Backport.Tests.CompileTest.CompileCheck&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;NUnit3x::203C2B86-81A6-E66C-3F06-495CBFDDD89E::net6.0::Backport.Tests.CompileTest.CompileCheck&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;NUnit3x::203C2B86-81A6-E66C-3F06-495CBFDDD89E::net8.0::Backport.Tests.CompileTest.CompileCheck&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;NUnit3x::203C2B86-81A6-E66C-3F06-495CBFDDD89E::net7.0::Backport.Tests.CompileTest.CompileCheck&lt;/TestId&gt;&#xD;
+  &lt;/TestAncestor&gt;&#xD;
+&lt;/SessionState&gt;</s:String></wpf:ResourceDictionary>
