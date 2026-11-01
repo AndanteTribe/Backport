@@ -15,6 +15,12 @@ namespace Backport.Unity
     {
         static Initializer()
         {
+            Initialize();
+        }
+
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterAssembliesLoaded)]
+        private static void Initialize()
+        {
             CustomSpanFormatter.OtherFormatterHelper = new UnityCustomSpanFormatter();
         }
     }

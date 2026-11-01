@@ -125,7 +125,7 @@ namespace System.Runtime.CompilerServices
         /// is called on any one of them.
         /// </remarks>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal void Clear()
+        public void Clear()
         {
             char[]? toReturn = _arrayToReturnToPool;
 
@@ -141,7 +141,7 @@ namespace System.Runtime.CompilerServices
         }
 
         /// <summary>Gets a span of the characters appended to the handler.</summary>
-        internal ReadOnlySpan<char> Text => _chars.Slice(0, _pos);
+        public ReadOnlySpan<char> Text => _chars.Slice(0, _pos);
 
         /// <summary>Writes the specified string to the handler.</summary>
         /// <param name="value">The string to write.</param>
@@ -275,6 +275,16 @@ namespace System.Runtime.CompilerServices
                 _pos += charsWritten;
                 return;
             }
+            if (value is ISpanFormattable spanFormattable)
+            {
+                int charsWritten;
+                while (!spanFormattable.TryFormat(_chars.Slice(_pos), out charsWritten, default, _provider))
+                {
+                    Grow();
+                }
+                _pos += charsWritten;
+                return;
+            }
             if (value is IFormattable formattable)
             {
                 s = formattable.ToString(format: null, _provider); // constrained call avoiding boxing for value types
@@ -325,6 +335,16 @@ namespace System.Runtime.CompilerServices
                     Grow();
                 }
 
+                _pos += charsWritten;
+                return;
+            }
+            if (value is ISpanFormattable spanFormattable)
+            {
+                int charsWritten;
+                while (!spanFormattable.TryFormat(_chars.Slice(_pos), out charsWritten, format, _provider))
+                {
+                    Grow();
+                }
                 _pos += charsWritten;
                 return;
             }
@@ -624,7 +644,8 @@ namespace System.Runtime.CompilerServices
             // ints that could technically overflow if someone tried to, for example, append a huge string to a huge string, we also clamp to int.MaxValue.
             // Even if the array creation fails in such a case, we may later fail in ToStringAndClear.
 
-            const int stringMaxLength = 100000;
+            // System.String.MaxLength in dotnet/runtime v10.0.14 (internal to CoreLib).
+            const int stringMaxLength = 0x3FFFFFDF;
             uint newCapacity = Math.Max(requiredMinCapacity, Math.Min((uint)_chars.Length * 2, stringMaxLength));
             int arraySize = (int)Math.Clamp(newCapacity, MinimumArrayPoolLength, int.MaxValue);
 

@@ -1,6 +1,8 @@
 #if !NET6_0_OR_GREATER
 
+using System.Buffers.Binary;
 using System.Runtime.CompilerServices;
+using System.Security.Cryptography;
 
 namespace System;
 
@@ -25,54 +27,128 @@ public static class RandomExtensions
 
     private sealed class ThreadSafeRandom : Random
     {
-        private readonly object _lock = new object();
+        [ThreadStatic]
+        private static XoshiroState? s_random;
+
+        private static XoshiroState LocalRandom => s_random ??= new XoshiroState();
 
         public override int Next()
         {
-            lock (_lock)
+            uint result;
+            do
             {
-                return base.Next();
+                result = LocalRandom.NextUInt32() >> 1;
             }
+            while (result == int.MaxValue);
+            return (int)result;
         }
 
         public override int Next(int maxValue)
         {
-            lock (_lock)
+            if (maxValue < 0)
             {
-                return base.Next(maxValue);
+                throw new ArgumentOutOfRangeException(nameof(maxValue));
             }
+            return (int)LocalRandom.NextBelow((uint)maxValue);
         }
 
         public override int Next(int minValue, int maxValue)
         {
-            lock (_lock)
+            if (minValue > maxValue)
             {
-                return base.Next(minValue, maxValue);
+                throw new ArgumentOutOfRangeException(nameof(minValue));
             }
+            return (int)((long)LocalRandom.NextBelow((uint)((long)maxValue - minValue)) + minValue);
         }
 
         public override void NextBytes(Span<byte> buffer)
         {
-            lock (_lock)
+            var random = LocalRandom;
+            while (buffer.Length >= sizeof(ulong))
             {
-                base.NextBytes(buffer);
+                BinaryPrimitives.WriteUInt64LittleEndian(buffer, random.NextUInt64());
+                buffer = buffer.Slice(sizeof(ulong));
+            }
+            if (!buffer.IsEmpty)
+            {
+                ulong remaining = random.NextUInt64();
+                for (int i = 0; i < buffer.Length; i++)
+                {
+                    buffer[i] = (byte)remaining;
+                    remaining >>= 8;
+                }
             }
         }
 
         public override void NextBytes(byte[] buffer)
         {
-            lock (_lock)
+            if (buffer is null)
             {
-                base.NextBytes(buffer);
+                throw new ArgumentNullException(nameof(buffer));
             }
+            NextBytes(buffer.AsSpan());
         }
 
         public override double NextDouble()
         {
-            lock (_lock)
+            return (LocalRandom.NextUInt64() >> 11) * (1.0 / (1UL << 53));
+        }
+
+        private sealed class XoshiroState
+        {
+            private ulong _s0, _s1, _s2, _s3;
+
+            internal XoshiroState()
             {
-                return base.NextDouble();
+                Span<byte> seed = stackalloc byte[32];
+                do
+                {
+                    RandomNumberGenerator.Fill(seed);
+                    _s0 = BinaryPrimitives.ReadUInt64LittleEndian(seed);
+                    _s1 = BinaryPrimitives.ReadUInt64LittleEndian(seed.Slice(8));
+                    _s2 = BinaryPrimitives.ReadUInt64LittleEndian(seed.Slice(16));
+                    _s3 = BinaryPrimitives.ReadUInt64LittleEndian(seed.Slice(24));
+                }
+                while ((_s0 | _s1 | _s2 | _s3) == 0);
             }
+
+            // xoshiro256**, as used by the 64-bit .NET 10 Random implementation.
+            internal ulong NextUInt64()
+            {
+                unchecked
+                {
+                    ulong result = RotateLeft(_s1 * 5, 7) * 9;
+                    ulong t = _s1 << 17;
+                    _s2 ^= _s0;
+                    _s3 ^= _s1;
+                    _s1 ^= _s2;
+                    _s0 ^= _s3;
+                    _s2 ^= t;
+                    _s3 = RotateLeft(_s3, 45);
+                    return result;
+                }
+            }
+
+            internal uint NextUInt32() => (uint)(NextUInt64() >> 32);
+
+            internal uint NextBelow(uint maxValue)
+            {
+                ulong product = (ulong)maxValue * NextUInt32();
+                uint low = (uint)product;
+                if (low < maxValue)
+                {
+                    uint threshold = unchecked(0u - maxValue) % maxValue;
+                    while (low < threshold)
+                    {
+                        product = (ulong)maxValue * NextUInt32();
+                        low = (uint)product;
+                    }
+                }
+                return (uint)(product >> 32);
+            }
+
+            private static ulong RotateLeft(ulong value, int offset) =>
+                (value << offset) | (value >> (64 - offset));
         }
     }
 }

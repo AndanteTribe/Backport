@@ -16,10 +16,11 @@
 | API | 利用可能な条件 |
 |-----|--------------|
 | `System.Runtime.CompilerServices.CallerArgumentExpressionAttribute` | `< .NET 6` |
-| `System.Threading.CancellationTokenExtensions` (`UnsafeRegister`) | `< .NET 6` |
+| `System.Threading.CancellationTokenExtensions` (`UnsafeRegister`) | `< .NET 5` |
 | `System.Runtime.InteropServices.CollectionsMarshal` (`AsSpan`) | `< .NET 5` |
 | `System.Runtime.CompilerServices.CompilerFeatureRequiredAttribute` | `< .NET 7` |
 | `System.Runtime.CompilerServices.DefaultInterpolatedStringHandler` | `< .NET 6` |
+| `DefaultInterpolatedStringHandlerExtensions` (`Text`, `Clear`) | `.NET 6～9` |
 | `System.Runtime.CompilerServices.InterpolatedStringHandlerArgumentAttribute` | `< .NET 6` |
 | `System.Runtime.CompilerServices.InterpolatedStringHandlerAttribute` | `< .NET 6` |
 | `System.Runtime.CompilerServices.IsExternalInit` | `< .NET 5` |
@@ -36,6 +37,8 @@ API シグネチャは .NET 6 の標準実装と同一ですが、挙動は UniT
 
 #### `DefaultInterpolatedStringHandler`
 標準の .NET ソースから実装を改変しています。`ISpanFormattable` を実装した型については、中間文字列アロケーションなしに内部バッファへ直接書き込む最適化が可能です。`Backport.Unity` 導入時は、`UnityCustomSpanFormatter` を通じて `UnityEngine.Vector3`・`Quaternion`・`Color` などの Unity 固有の値型にも対応します。
+
+`DefaultInterpolatedStringHandler.Text` と `Clear()` は、.NET 5以前ではバックポート型の公開メンバー、.NET 6～9では拡張メンバー、.NET 10以降では本家の公開メンバーとして利用できます。.NET 6～9の `Text` プロパティ構文にはC# 14が必要です。`Clear()` は通常の `ref` 拡張メソッドです。拡張実装は本家の非公開メンバーに依存し、.NET 6・7ではキャッシュしたデリゲート、.NET 8・9では `UnsafeAccessor` を使用します。
 
 #### `Random.Shared`（`RandomExtensions`）
 `Random.Shared` は C# 14 の `extension` ブロックを使用して実装されています。そのため `Random.Shared` という構文が使えるのは C# 14 以上でコンパイルする場合のみです。それより前の C# バージョンでは、内部の静的アクセサー（`RandomExtensions.get_Shared()`）にはアクセスできますが、主にライブラリ内部での使用を想定しています。

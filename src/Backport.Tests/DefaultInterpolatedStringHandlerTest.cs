@@ -10,6 +10,17 @@ namespace Backport.Tests
 {
     public class DefaultInterpolatedStringHandlerTest
     {
+        // NUnit port of dotnet/runtime v10.0.14 DefaultInterpolatedStringHandlerTests.cs.
+        [Test]
+        public void Clear_Clears()
+        {
+            var handler = new DefaultInterpolatedStringHandler(0, 0);
+            handler.AppendLiteral("hi");
+            handler.Clear();
+            Assert.That(handler.Text.IsEmpty, Is.True);
+            Assert.That(handler.ToString(), Is.EqualTo(string.Empty));
+        }
+
         [TestCase(0, 0)]
         [TestCase(1, 1)]
         [TestCase(42, 84)]
