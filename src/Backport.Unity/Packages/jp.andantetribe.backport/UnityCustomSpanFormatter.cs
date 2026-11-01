@@ -887,7 +887,7 @@ namespace Backport.Unity
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static bool TryFormatVector2Int(Vector2Int value, in Span<char> destination, out int written, in ReadOnlySpan<char> format, IFormatProvider? provider)
         {
-            var f = format.IsEmpty ? "F2" : format;
+            var f = format;
             provider ??= CultureInfo.InvariantCulture.NumberFormat;
             written = 0;
 
@@ -983,7 +983,7 @@ namespace Backport.Unity
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static bool TryFormatVector3Int(Vector3Int value, in Span<char> destination, out int written, in ReadOnlySpan<char> format, IFormatProvider? provider)
         {
-            var f = format.IsEmpty ? "F2" : format;
+            var f = format;
             provider ??= CultureInfo.InvariantCulture.NumberFormat;
             written = 0;
 

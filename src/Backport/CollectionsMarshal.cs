@@ -16,8 +16,22 @@ public static class CollectionsMarshal
     /// <param name="list">The list to get the data view over.</param>
     /// <typeparam name="T">The type of the elements in the list.</typeparam>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Span<T> AsSpan<T>(List<T>? list) =>
-        list == null ? default : Unsafe.As<List<T>, ListDummy<T>>(ref list).Items.AsSpan(0, list.Count);
+    public static Span<T> AsSpan<T>(List<T>? list)
+    {
+        if (list is null)
+        {
+            return default;
+        }
+
+        int size = list.Count;
+        T[] items = Unsafe.As<List<T>, ListDummy<T>>(ref list).Items;
+        if ((uint)size > (uint)items.Length)
+        {
+            throw new InvalidOperationException("Concurrent operations are not supported.");
+        }
+
+        return items.AsSpan(0, size);
+    }
 
     private sealed class ListDummy<T>
     {

@@ -5,7 +5,8 @@
 
 namespace System.Runtime.CompilerServices
 {
-    public sealed class IsExternalInit
+    [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+    public static class IsExternalInit
     {
     }
 }

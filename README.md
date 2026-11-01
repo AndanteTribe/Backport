@@ -16,10 +16,11 @@ It allows you to use newer C# language features and .NET APIs — such as interp
 | API | Available when |
 |-----|---------------|
 | `System.Runtime.CompilerServices.CallerArgumentExpressionAttribute` | `< .NET 6` |
-| `System.Threading.CancellationTokenExtensions` (`UnsafeRegister`) | `< .NET 6` |
+| `System.Threading.CancellationTokenExtensions` (`UnsafeRegister`) | `< .NET 5` |
 | `System.Runtime.InteropServices.CollectionsMarshal` (`AsSpan`) | `< .NET 5` |
 | `System.Runtime.CompilerServices.CompilerFeatureRequiredAttribute` | `< .NET 7` |
 | `System.Runtime.CompilerServices.DefaultInterpolatedStringHandler` | `< .NET 6` |
+| `DefaultInterpolatedStringHandlerExtensions` (`Text`, `Clear`) | `.NET 6–9` |
 | `System.Runtime.CompilerServices.InterpolatedStringHandlerArgumentAttribute` | `< .NET 6` |
 | `System.Runtime.CompilerServices.InterpolatedStringHandlerAttribute` | `< .NET 6` |
 | `System.Runtime.CompilerServices.IsExternalInit` | `< .NET 5` |
@@ -36,6 +37,8 @@ While the API signature matches the .NET 6 original, the behavior is equivalent 
 
 #### `DefaultInterpolatedStringHandler`
 The implementation has been modified from the standard .NET source. It supports optimization via `ISpanFormattable`, allowing types that implement `ISpanFormattable` to write directly into the internal buffer without intermediate string allocation. When using `Backport.Unity`, Unity-specific value types (e.g. `UnityEngine.Vector3`, `Quaternion`, `Color`, etc.) are also supported through `UnityCustomSpanFormatter`.
+
+`DefaultInterpolatedStringHandler.Text` and `Clear()` are public members of the backported type before .NET 6, extension members on .NET 6–9, and built-in public members on .NET 10+. The `Text` property syntax on .NET 6–9 requires C# 14; `Clear()` is a conventional `ref` extension method. These extensions depend on non-public runtime members, using cached delegates on .NET 6–7 and `UnsafeAccessor` on .NET 8–9.
 
 #### `Random.Shared` (`RandomExtensions`)
 `Random.Shared` is implemented using a C# 14 `extension` block. This means `Random.Shared` syntax is only available when compiling with C# 14 or later. In earlier C# versions, the underlying static accessor (`RandomExtensions.get_Shared()`) is accessible but is primarily intended for internal library use.
