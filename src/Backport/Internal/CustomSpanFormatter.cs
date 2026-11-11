@@ -1,6 +1,7 @@
 #if !NET6_0_OR_GREATER
 
 using System.Reflection;
+using System.Runtime.CompilerServices;
 
 namespace Backport.Internal;
 
@@ -39,6 +40,7 @@ internal static class CustomSpanFormatter
         static Cache() => Formatter = GetDefaultHelper(typeof(T)) as TryFormat<T>;
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static TryFormat<T>? GetFormatter<T>() => Cache<T>.Formatter;
 
     private static object? GetDefaultHelper(Type type)

@@ -3,6 +3,7 @@
 
 #if !NET6_0_OR_GREATER
 using System.Globalization;
+using System.Runtime.CompilerServices;
 
 namespace Backport.Internal;
 
@@ -25,6 +26,7 @@ internal ref struct CompositeFormatTryWriteHandler
         _hasCustomFormatter = provider is not null && provider.GetType() != typeof(CultureInfo) && provider.GetFormat(typeof(ICustomFormatter)) is not null;
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool AppendLiteral(string value)
     {
         if (value.AsSpan().TryCopyTo(_destination.Slice(_pos)))
