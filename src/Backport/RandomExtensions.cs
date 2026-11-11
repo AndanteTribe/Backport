@@ -20,7 +20,6 @@ public static class RandomExtensions
         /// </summary>
         public static Random Shared
         {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => s_shared;
         }
     }
@@ -113,22 +112,34 @@ public static class RandomExtensions
             }
 
             // xoshiro256**, as used by the 64-bit .NET 10 Random implementation.
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             internal ulong NextUInt64()
             {
                 unchecked
                 {
-                    ulong result = RotateLeft(_s1 * 5, 7) * 9;
-                    ulong t = _s1 << 17;
-                    _s2 ^= _s0;
-                    _s3 ^= _s1;
-                    _s1 ^= _s2;
-                    _s0 ^= _s3;
-                    _s2 ^= t;
-                    _s3 = RotateLeft(_s3, 45);
+                    ulong s0 = _s0, s1 = _s1, s2 = _s2, s3 = _s3;
+
+                    ulong result = RotateLeft(s1 * 5, 7) * 9;
+                    ulong t = s1 << 17;
+
+                    s2 ^= s0;
+                    s3 ^= s1;
+                    s1 ^= s2;
+                    s0 ^= s3;
+
+                    s2 ^= t;
+                    s3 = RotateLeft(s3, 45);
+
+                    _s0 = s0;
+                    _s1 = s1;
+                    _s2 = s2;
+                    _s3 = s3;
+
                     return result;
                 }
             }
 
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             internal uint NextUInt32() => (uint)(NextUInt64() >> 32);
 
             internal uint NextBelow(uint maxValue)
@@ -147,6 +158,7 @@ public static class RandomExtensions
                 return (uint)(product >> 32);
             }
 
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             private static ulong RotateLeft(ulong value, int offset) =>
                 (value << offset) | (value >> (64 - offset));
         }

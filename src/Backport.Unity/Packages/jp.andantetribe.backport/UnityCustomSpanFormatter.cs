@@ -3,7 +3,6 @@
 
 using System;
 using System.Globalization;
-using System.Runtime.CompilerServices;
 using Backport.Internal;
 using UnityEngine;
 
@@ -101,7 +100,6 @@ namespace Backport.Unity
             return null;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static bool TryFormatBounds(Bounds value, in Span<char> destination, out int written, in ReadOnlySpan<char> format, IFormatProvider? provider)
         {
             written = 0;
@@ -133,7 +131,6 @@ namespace Backport.Unity
             return true;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static bool TryFormatBoundsInt(BoundsInt value, in Span<char> destination, out int written, in ReadOnlySpan<char> format, IFormatProvider? provider)
         {
             written = 0;
@@ -165,7 +162,6 @@ namespace Backport.Unity
             return true;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static bool TryFormatColor(Color value, in Span<char> destination, out int written, in ReadOnlySpan<char> format, IFormatProvider? provider)
         {
             var f = format.IsEmpty ? "F3" : format;
@@ -230,7 +226,6 @@ namespace Backport.Unity
             return true;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static bool TryFormatColor32(Color32 value, in Span<char> destination, out int written, in ReadOnlySpan<char> format, IFormatProvider? provider)
         {
             provider ??= CultureInfo.InvariantCulture.NumberFormat;
@@ -294,7 +289,6 @@ namespace Backport.Unity
             return true;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static bool TryFormatMatrix4X4(Matrix4x4 value, in Span<char> destination, out int written, in ReadOnlySpan<char> format, IFormatProvider? provider)
         {
             var f = format.IsEmpty ? "F5" : format;
@@ -512,7 +506,6 @@ namespace Backport.Unity
             return true;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static bool TryFormatQuaternion(Quaternion value, in Span<char> destination, out int written, in ReadOnlySpan<char> format, IFormatProvider? provider)
         {
             var f = format.IsEmpty ? "F5" : format;
@@ -578,7 +571,6 @@ namespace Backport.Unity
             return true;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static bool TryFormatRay(Ray value, in Span<char> destination, out int written, in ReadOnlySpan<char> format, IFormatProvider? provider)
         {
             written = 0;
@@ -610,7 +602,6 @@ namespace Backport.Unity
             return true;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static bool TryFormatRay2D(Ray2D value, in Span<char> destination, out int written, in ReadOnlySpan<char> format, IFormatProvider? provider)
         {
             written = 0;
@@ -642,7 +633,6 @@ namespace Backport.Unity
             return true;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static bool TryFormatRect(Rect value, in Span<char> destination, out int written, in ReadOnlySpan<char> format, IFormatProvider? provider)
         {
             var f = format.IsEmpty ? "F2" : format;
@@ -707,7 +697,6 @@ namespace Backport.Unity
             return true;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static bool TryFormatRectInt(RectInt value, in Span<char> destination, out int written, in ReadOnlySpan<char> format, IFormatProvider? provider)
         {
             provider ??= CultureInfo.InvariantCulture.NumberFormat;
@@ -771,7 +760,6 @@ namespace Backport.Unity
             return true;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static bool TryFormatRectOffset(RectOffset value, in Span<char> destination, out int written, in ReadOnlySpan<char> format, IFormatProvider? provider)
         {
             provider ??= CultureInfo.InvariantCulture.NumberFormat;
@@ -842,7 +830,6 @@ namespace Backport.Unity
             return true;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static bool TryFormatVector2(Vector2 value, in Span<char> destination, out int written, in ReadOnlySpan<char> format, IFormatProvider? provider)
         {
             var f = format.IsEmpty ? "F2" : format;
@@ -884,7 +871,6 @@ namespace Backport.Unity
             return true;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static bool TryFormatVector2Int(Vector2Int value, in Span<char> destination, out int written, in ReadOnlySpan<char> format, IFormatProvider? provider)
         {
             var f = format;
@@ -926,7 +912,6 @@ namespace Backport.Unity
             return true;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static bool TryFormatVector3(Vector3 value, in Span<char> destination, out int written, in ReadOnlySpan<char> format, IFormatProvider? provider)
         {
             var f = format.IsEmpty ? "F2" : format;
@@ -980,7 +965,6 @@ namespace Backport.Unity
             return true;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static bool TryFormatVector3Int(Vector3Int value, in Span<char> destination, out int written, in ReadOnlySpan<char> format, IFormatProvider? provider)
         {
             var f = format;
@@ -1034,7 +1018,6 @@ namespace Backport.Unity
             return true;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static bool TryFormatVector4(Vector4 value, in Span<char> destination, out int written, in ReadOnlySpan<char> format, IFormatProvider? provider)
         {
             var f = format.IsEmpty ? "F2" : format;
